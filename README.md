@@ -42,7 +42,7 @@ Se declaran en el archivo `router/index.js`, dentro de `const routes = []` y hay
 {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import('../views/About.vue')
 }
 ```
 **Todas las rutas que vayamos a necesitar se declaran acá y se corresponden con un archivo de la carpeta `views`**
@@ -85,3 +85,104 @@ Por ejemplo, el `template` de `App.vue` podría ser:
 Todo está dentro de un `div`, el cual contiene un componente llamado `navigation-bar` (para que aparezca en todas las vistas) y dentro de un `div` con clase `container` (de bootstrap, para darle un mejor estilo) se van a cargar todas las `views`.
 
 **Para usar componentes hay que importarlos dentro del tag `script`**
+
+#### Tag `script`
+Dentro de este tag se importan los componentes, se coloca la lógica de comportamiento de la vista/componente actual, métodos, datos, lifecycle functions, etc.  
+Un simple ejemplo de este tag para el caso del template anterior (para `App.vue`) sería:
+```
+<script>
+import Navigation from "@/components/bootstrap/Navigation.vue";
+export default {
+  components: {
+    "navigation-bar": Navigation,
+  },
+};
+</script>
+```
+Primero importo el componente `Navigation` que está dentro de `components/bootstrap` (cree esa carpera bootstrap para ordenar los componentes que creo a partir de los que provee bootstrap).  
+Después lo defino para usarlo en el `template` con el tag `navigation-bar`, y recién ahí funcionaría el tag del ejemplo de template anterior
+
+#### Tag `style`
+Muy obvio, acá se definen las clases CSS (o lenguaje de estilo elegido)
+Ejemplo:
+```
+<style>
+h1 {
+  color:red;
+}
+</style>
+```
+Esto haría que el texto de las etiquetas h1 sea rojo (horrible :p).  
+
+# A los bifes.. el TP del profesor
+## Listado de los platos en el `Home`
+Las imágenes están en la carpeta `public/data/images` y el JSON en `public/data/json`
+Empezando por el tag `script`, tendría una estructura básica como la siguiente:
+```
+<script>
+//acá van los imports (de los componentes)
+//import MyComponent from "@/path/to/MyComponent.vue"
+
+export default {
+  name: "Home",
+  //De esta propiedad solo encontré que es obligatoria para componentes recursivos (?)
+  //La borré y andaba todo igual, pero al final la dejé :p
+
+  components: {
+    //Acá definimos los tags para utilizar los componentes importados
+    //"my-component": MyComponent  
+  },
+
+  mounted(){
+    //Este es como el constructor, acá llamamos a los métodos definidos
+    //más abajo que necesitamos que se ejecutan cuando se llama al componente
+    //this.getData()
+  },
+
+  data() {
+    return {
+      //Entiendo que acá se definen variables, como en este caso, un array vacío
+      //platosData: [],
+    }
+  },
+
+  methods: {
+    //acá se definen los métodos que pueden ser llamados en cualquier momento
+    /*
+    async getPlatos() {
+      const res = await fetch("data/json/platos.json");
+      const resJson = await res.json();
+      console.log(resJson);
+      this.platosData = resJson.platos;
+    }
+    */
+  }
+};
+</script>
+```
+Como todavía no creo ningun componente para mostrar cada plato, los voy a listar para probar que funciona la lectura del JSON.  
+ - Voy a tener un método `getData()` para obtener los datos del JSON que se va a llamar al inicio, por lo tanto lo llamo desde el método `mounted()`
+```
+mounted(){
+  this.getData()
+}
+```
+- Ese método va a tomar los datos del JSON y los va a settear en un array vacío
+```
+data() {
+    return {
+      platosData: [],
+    }
+}
+```
+- Finalmente, dentro de `methods` defino el método `getData()`:
+```
+methods: {
+  async getData() {
+    const res = await fetch("data/json/platos.json");
+    const resJson = await res.json();
+    console.log(resJson);
+    this.platosData = resJson.platos;//tiene que ser .platos por la estructura del JSON
+  }
+}
+```
