@@ -186,3 +186,14 @@ methods: {
   }
 }
 ```
+Y para probarlo, el HTML quedaría:
+```
+<template>
+  <div class="home">
+    <h2>Cantidad de platos: {{platosData.length}}</h2>
+    <div v-for="plato in platosData" :key="plato.id">
+      <p>{{plato.id}} - {{plato.nombre}}</p>
+    </div>
+  </div>
+</template>
+```
