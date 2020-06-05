@@ -68,3 +68,20 @@ Es la misma para ambos casos, son 3 partes, la del HTML, la del JavaScript y la 
 </style>
 ```
 `template` vendría a ser la única obligatoria (_creo_), las otras 2 son opcionales.
+
+#### Tag `template`
+Dentro del tag debe haber una sola etiqueta (por ejemplo un `div`), y dentro de esta armar la vista del componente.
+Por ejemplo, el `template` de `App.vue` podría ser:
+```
+<template>
+  <div id="app">
+    <navigation-bar />
+    <div class="container">
+      <router-view />
+    </div>
+  </div>
+</template>
+```
+Todo está dentro de un `div`, el cual contiene un componente llamado `navigation-bar` (para que aparezca en todas las vistas) y dentro de un `div` con clase `container` (de bootstrap, para darle un mejor estilo) se van a cargar todas las `views`.
+
+**Para usar componentes hay que importarlos dentro del tag `script`**
