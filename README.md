@@ -167,6 +167,7 @@ mounted(){
   this.getData()
 }
 ```
+
 - Ese método va a tomar los datos del JSON y los va a settear en un array vacío
 ```
 data() {
@@ -175,6 +176,7 @@ data() {
     }
 }
 ```
+
 - Finalmente, dentro de `methods` defino el método `getData()`:
 ```
 methods: {
@@ -196,4 +198,94 @@ Y para probarlo, el HTML quedaría:
     </div>
   </div>
 </template>
+```
+
+## Funciona, a meterle otro componente
+Ahora vamos a agregar un componente que muestre debidamente cada plato, para esto hago lo siguiente:
+1. Reemplazo la línea:  
+`<p>{{plato.id}} - {{plato.nombre}}</p>`
+con  
+`<plato-item :platoParam="plato"></plato-item>`  
+es decir, le paso  a `platoParam` un `plato` como parámetro (los `:` es para indicar que `platoParam` es un elemento dinámico, y con ese nombre será llamado en el componente de la etiqueta `plato-item`)
+
+2. Dentro del tag `script` importo el componente y creo el tag `plato-item` con ese componente:  
+`import PlatoCard from '@/components/PlatoCard.vue'`
+```
+components: {
+  "plato-item": PlatoCard
+}
+```
+3. Creo el componente `PlatoCard.vue` en `components`.  
+
+El tag `script` es simplemente para asignarle a `props` el parámetro `platoParam` utilizado en la llamada al componente:  
+```
+<script>
+export default {
+  props: ["platoParam"],
+};
+</script>
+```
+El tag `template` parece complejo pero simplemente estoy utilizando la plantilla Card de Bootstrap Vue.  
+La plantilla original:
+```
+<div>
+  <b-card
+    title="Card Title"
+    img-src="https://picsum.photos/600/300/?image=25"
+    img-alt="Image"
+    img-top
+    tag="article"
+    style="max-width: 20rem;"
+    class="mb-2"
+  >
+    <b-card-text>
+      Some quick example text to build on the card title and make up the bulk of the card's content.
+    </b-card-text>
+
+    <b-button href="#" variant="primary">Go somewhere</b-button>
+  </b-card>
+</div>
+```
+
+Template con el Card editado:
+```
+<template>
+  <div>
+    <b-card
+      :title="platoParam.nombre"
+      :img-src="'/data/images/' + platoParam.imagenPath"
+      :img-alt="'Imagen de ' + platoParam.nombre"
+      img-top
+      tag="article"
+      style="max-width: 20rem;"
+      class="mb-2"
+    >
+      <b-card-text>
+        <h3>$ {{platoParam.precio}}</h3>
+
+        <span v-if="platoParam.rubro === 'Bebidas'">Desc. 20% comprando 2 o más</span>
+
+        <h5>Ingredientes:</h5>
+        <p>
+            <ul>
+                <li v-for="(ingrediente,i) in platoParam.ingredientes" :key="i">
+                    {{ingrediente}}
+                </li>
+            </ul>
+        </p>
+
+      </b-card-text>
+
+      <b-button href="#" variant="primary">Ver detalle</b-button>
+    </b-card>
+  </div>
+</template>
+```
+Finalmente, para que no se vea un plato debajo del otro, hice unas pequeñas modificaciones en el `template` de `Home`:  
+```
+<div class="row">
+  <div v-for="plato in platosData" :key="plato.id" class="col-4">
+    <plato-item :platoParam="plato" />
+  </div>
+</div>
 ```
